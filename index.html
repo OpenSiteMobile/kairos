@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta charset="utf-8" />
+	<meta name="handheldfriendly" content="true" />
+	<meta name="mobileoptimized"  content="width" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="Open source software for the mobile web!" />
+	<meta name="author" content="Dwight Vietzke" />
+
+	<title>Kairos Face Recognition Demo</title>
+
+	<link rel='shortcut icon' href='../mobilesiteos/images/osm.ico' />
+
+    <style>
+        /* Std AngularJS CSS: Load in page so cloaking start immediately */
+        [ng\:cloak],
+		[ng-cloak],
+		[data-ng-cloak],
+		[x-ng-cloak],
+		.ng-cloak,
+		.x-ng-cloak,
+		.ng-hide:not(.ng-hide-animate) {
+			display: none !important;
+		}
+
+		ng\:form {
+			display: block;
+		}
+
+		/* Page specific */
+        #drop_zone {
+            border-width: 4px; 
+            border-style: solid; 
+            border-color: #139C8A; 
+        }
+    </style>
+
+	<script src="../mobilesiteos/msos/base.min.js"></script>
+	<script src="./config.js"></script>
+</head>
+
+    <body>
+        <div class="container">
+            <h2>Detect</h2>
+
+            <p>
+                This example demonstrates the kairos /detect method. The detect method
+                finds faces within an image and returns data describing the face features.
+                Drop an image containing a single face into the box below and wait for
+                the response.
+            </p>
+
+            <br />
+            <br />
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div id="drop_zone">Drop an image here!
+                        <canvas id="myCanvas" width="400" height="400"></canvas>
+                    </div>
+                </div>
+                <div id="kairos_response" class="col-lg-6" style="padding:10px;border:1px solid rgba(51, 51, 51, 0.08);background-color: rgba(204, 204, 204, 0.26);">
+                    <i>(Response will appear here)</i>
+                </div>
+            </div>
+        </div>
+        <!-- /container -->
+
+        <script>
+
+            /*global
+                msos: false,
+                jQuery: false,
+                Kairos: false
+            */
+
+            msos.onload_func_done.push(
+                function () {
+                    "use strict";
+
+                    // kairos SDK
+                    var kairos = new Kairos('bcacb3b5', '8c18ef9ef82c421379a3ced934d8010b'),
+                        global_image_data,
+                        dropZone = document.getElementById('drop_zone');
+
+                    msos.console.info('Page index.html loaded!');
+
+                    function imageToDataUri(img, width, height) {
+
+                        msos.console.debug('imageToDataUri -> start.');
+
+                        // create an off-screen canvas
+                        var canvas = document.createElement('canvas'),
+                            ctx = canvas.getContext('2d');
+
+                        // set its dimension to target size
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        // draw source image into the off-screen canvas:
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        msos.console.debug('imageToDataUri -> done!');
+                        // encode image to data-uri with base64 version of compressed image
+                        return canvas.toDataURL();
+                    }
+
+                    // drawing method
+                    function myDrawMethod(face) {
+
+                        var canvas = document.getElementById('myCanvas'),
+                            context = canvas.getContext('2d'),
+                            imageObj = new Image();
+
+                        msos.console.debug('myDrawMethod -> start.');
+
+                        context.clearRect(0, 0, canvas.width, canvas.height);
+
+                        imageObj.onload = function () {
+                            context.drawImage(imageObj, 0, 0);
+
+                            // draw face box
+                            context.beginPath();
+                            context.rect(face.topLeftX, face.topLeftY, face.width, face.height);
+                            context.lineWidth = 4;
+                            context.strokeStyle = '#139C8A';
+                            context.stroke();
+
+                            // draw left eye
+                            context.beginPath();
+                            context.moveTo(face.leftEyeCornerLeftX, face.leftEyeCornerLeftY);
+                            context.lineTo(face.leftEyeCornerRightX, face.leftEyeCornerRightY);
+                            context.stroke();
+
+                            context.beginPath();
+                            context.moveTo(face.leftEyeCenterX, (face.leftEyeCenterY + (face.height / 25)));
+                            context.lineTo(face.leftEyeCenterX, (face.leftEyeCenterY - (face.height / 25)));
+                            context.stroke();
+
+                            // draw right eye
+                            context.beginPath();
+                            context.moveTo(face.rightEyeCornerLeftX, face.rightEyeCornerLeftY);
+                            context.lineTo(face.rightEyeCornerRightX, face.rightEyeCornerRightY);
+                            context.stroke();
+
+                            context.beginPath();
+                            context.moveTo(face.rightEyeCenterX, (face.rightEyeCenterY + (face.height / 25)));
+                            context.lineTo(face.rightEyeCenterX, (face.rightEyeCenterY - (face.height / 25)));
+                            context.stroke();
+
+                            // left eyebrow
+                            context.beginPath();
+                            context.moveTo(face.leftEyeBrowLeftX, face.leftEyeBrowLeftY);
+                            context.lineTo(face.leftEyeBrowMiddleX, face.leftEyeBrowMiddleY);
+                            context.stroke();
+
+                            context.beginPath();
+                            context.moveTo(face.leftEyeBrowMiddleX, face.leftEyeBrowMiddleY);
+                            context.lineTo(face.leftEyeBrowRightX, face.leftEyeBrowRightY);
+                            context.stroke();
+
+                            // right eyebrow
+                            context.beginPath();
+                            context.moveTo(face.rightEyeBrowLeftX, face.rightEyeBrowLeftY);
+                            context.lineTo(face.rightEyeBrowMiddleX, face.rightEyeBrowMiddleY);
+                            context.stroke();
+
+                            context.beginPath();
+                            context.moveTo(face.rightEyeBrowMiddleX, face.rightEyeBrowMiddleY);
+                            context.lineTo(face.rightEyeBrowRightX, face.rightEyeBrowRightY);
+                            context.stroke();
+
+                            // draw mouth
+                            context.beginPath();
+                            context.moveTo(face.lipCornerLeftX, face.lipCornerLeftY);
+                            context.lineTo(face.lipLineMiddleX, face.lipLineMiddleY);
+                            context.stroke();
+                            context.beginPath();
+                            context.moveTo(face.lipLineMiddleX, face.lipLineMiddleY);
+                            context.lineTo(face.lipCornerRightX, face.lipCornerRightY);
+                            context.stroke();
+
+                            // draw nose
+                            context.beginPath();
+                            context.moveTo(face.nostrilLeftSideX, face.nostrilLeftSideY);
+                            context.lineTo(face.nostrilLeftHoleBottomX, face.nostrilLeftHoleBottomY);
+                            context.stroke();
+
+                            context.beginPath();
+                            context.moveTo(face.nostrilRightSideX, face.nostrilRightSideY);
+                            context.lineTo(face.nostrilRightHoleBottomX, face.nostrilRightHoleBottomY);
+                            context.stroke();
+                        };
+
+                        imageObj.src = 'data:image/jpeg;base64,' + global_image_data;
+
+                        msos.console.debug('myDrawMethod -> done!');
+                    }
+
+                    function myDetectCallback(response) {
+
+                        msos.console.debug('myDetectCallback -> start.');
+
+                        document.getElementById("kairos_response").innerHTML = response.responseText;
+
+                        jQuery("#kairos_response").removeClass("modal");
+
+                        var kairosJSON = JSON.parse(response.responseText);
+
+                        if (!kairosJSON.images[0].faces[0]) {
+                            msos.console.error('myDetectCallback -> failed: no images in face response');
+                            return;
+                        }
+
+                        document.getElementById("kairos_response").innerHTML = JSON.stringify(kairosJSON, null, "\t");
+
+                        // call custom drawing method
+                        myDrawMethod(kairosJSON.images[0].faces[0]);
+
+                        msos.console.debug('myDetectCallback -> done!');
+                    }
+
+                    function handleFileSelect(evt) {
+
+                        msos.console.debug('handleFileSelect -> start.');
+
+                        document.getElementById("kairos_response").innerHTML = "<i>(Response will appear here)</i>";
+
+                        jQuery("#kairos_response").addClass("modal");
+
+                        evt.stopPropagation();
+                        evt.preventDefault();
+
+                        var files = evt.dataTransfer.files,     // FileList object.
+                            i = 0,
+                            reader = [];
+
+                        // Loop through the FileList and render image files as thumbnails.
+                        for (i = 0; i < files.length; i += 1) {
+
+                            // Only process image files.
+                            if (!files[i].type.match('image.*')) { continue; }
+
+                            reader.push(new FileReader());
+
+                            reader[i].onload = (function () {
+                                return function (e) {
+
+                                    var canvas = document.getElementById('myCanvas'),
+                                        context = canvas.getContext('2d'),
+                                        imageObj,
+                                        image_data,
+                                        maxWidth = 300,
+                                        ratio,
+                                        options = {
+                                            "selector": "FULL"
+                                        };
+
+                                    context.clearRect(0, 0, canvas.width, canvas.height);
+
+                                    imageObj = new Image();
+
+                                    imageObj.onload = function () {
+                                        context.drawImage(imageObj, 0, 0); // Or at whatever offset you like
+                                    };
+
+                                    imageObj.src = e.target.result;
+
+                                    image_data = e.target.result;
+
+                                    if (imageObj.width > maxWidth) {
+                                        ratio = maxWidth / imageObj.width;
+                                        image_data = imageToDataUri(imageObj, imageObj.width * ratio, imageObj.height * ratio);
+                                        imageObj.src = image_data;
+                                    }
+
+                                    image_data = String(image_data);
+                                    image_data = image_data.replace("data:image/jpeg;base64,", "");
+                                    image_data = image_data.replace("data:image/jpg;base64,", "");
+                                    image_data = image_data.replace("data:image/png;base64,", "");
+                                    image_data = image_data.replace("data:image/gif;base64,", "");
+                                    image_data = image_data.replace("data:image/bmp;base64,", "");
+                                    global_image_data = image_data;
+
+                                    // pass your callback method to the Detect function
+                                    kairos.detect(image_data, myDetectCallback, options);
+                                };
+                            }(files[i]));
+
+                            // Read in the image file as a data URL.
+                            reader[i].readAsDataURL(files[i]);
+                        }
+
+                        msos.console.debug('handleFileSelect -> done!');
+                    }
+
+                    function handleDragOver(evt) {
+                        msos.console.debug('handleDragOver -> fired!');
+
+                        evt.stopPropagation();
+                        evt.preventDefault();
+                        evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+                    }
+
+                    // Setup the dnd listeners.
+                    dropZone.addEventListener('dragover', handleDragOver, false);
+                    dropZone.addEventListener('drop', handleFileSelect, false);
+                }
+            );
+        </script>
+    </body>
+
+</html>

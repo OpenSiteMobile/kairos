@@ -204,7 +204,7 @@ msos.site.auto_init = function () {
 
 	var temp_ai = 'msos.site.auto_init -> ',
 		cfg = msos.config,
-		bw_val = msos.config.cookie.site_bdwd.value || '',
+		bw_val = msos.config.storage.site_bdwd.value || '',
 		bdwidth = bw_val ? parseInt(bw_val, 10) : 0;
 
 	msos.console.debug(temp_ai + 'start.');

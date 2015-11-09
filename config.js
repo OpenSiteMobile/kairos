@@ -38,17 +38,21 @@ msos.console.time('config');
 if (msos.config.debug_css) {
 
 	msos.deferred_css = [
-		msos.resource_url('css','font_awesome.uc.css'),
-		msos.resource_url('ng','bootstrap/css/v331_wo_icons.uc.css'),		// w/o Glyphicons
-		msos.resource_url('ng','bootstrap/css/v331_theme.uc.css'),
+		msos.resource_url('css', 'normalize.uc.css'),
+		msos.resource_url('css', 'font_awesome.uc.css'),
+		msos.resource_url('css', 'msos.css'),
+		msos.resource_url('css', 'msos_bs.css'),
+		msos.resource_url('css', 'msos_theme.css')
 	];
 
 } else {
 
 	msos.deferred_css = [
-		msos.resource_url('css','font_awesome.min.css'),
-		msos.resource_url('ng','bootstrap/css/v331_wo_icons.uc.css'),		// w/o Glyphicons
-		msos.resource_url('ng','bootstrap/css/v331_theme.uc.css'),
+		msos.resource_url('css', 'normalize.min.css'),
+		msos.resource_url('css', 'font_awesome.min.css'),
+		msos.resource_url('css', 'msos.css'),
+		msos.resource_url('css', 'msos_bs.css'),
+		msos.resource_url('css', 'msos_theme.css')
 	];
 
 }
@@ -64,9 +68,6 @@ if (msos.config.debug_script) {
     msos.deferred_scripts = [
 		msos.resource_url('jquery', 'v214.uc.js'),
 		msos.resource_url('jquery', 'ui/v1114.uc.js'),		// All UI Core + Draggable Interaction + Effects Core
-		msos.resource_url('ng', 'v147_msos.uc.js'),
-		msos.resource_url('ng', 'route/v150_msos.uc.js'),
-		msos.resource_url('ng', 'bootstrap/v0130_msos.uc.js'),
 		'site.js',											// Common installation specific setup code (which needs jQuery, underscore.js, etc.)
 		msos.resource_url('msos', 'core.uc.js'),
 		msos.resource_url('kairos',	'core.js')
@@ -78,10 +79,6 @@ if (msos.config.debug_script) {
     msos.deferred_scripts = [
 		msos.resource_url('jquery', 'v214.min.js'),
 		msos.resource_url('jquery', 'ui/v1114.min.js'),			// All UI Core + Draggable Interaction + Effects Core
-		msos.resource_url('ng', 'v147_msos.min.js'),
-		msos.resource_url('ng', 'route/v150_msos.min.js'),
-		msos.resource_url('ng', 'bootstrap/v0130_msos.min.js'),
-
 		'site.js',
 		msos.resource_url('msos', 'core.min.js'),
 		msos.resource_url('kairos',	'core.js')

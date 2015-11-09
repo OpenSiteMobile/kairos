@@ -14,27 +14,18 @@
 	<link rel='shortcut icon' href='../mobilesiteos/images/osm.ico' />
 
     <style>
-        /* Std AngularJS CSS: Load in page so cloaking start immediately */
-        [ng\:cloak],
-		[ng-cloak],
-		[data-ng-cloak],
-		[x-ng-cloak],
-		.ng-cloak,
-		.x-ng-cloak,
-		.ng-hide:not(.ng-hide-animate) {
-			display: none !important;
-		}
-
-		ng\:form {
-			display: block;
-		}
-
 		/* Page specific */
         #drop_zone {
             border-width: 4px; 
             border-style: solid; 
             border-color: #139C8A; 
         }
+		.container {
+			margin: 1em;
+		}
+		.kairos > a {
+			padding: 0.2em 0.4em;
+		}
     </style>
 
 	<script src="../mobilesiteos/msos/base.min.js"></script>
@@ -42,6 +33,16 @@
 </head>
 
     <body>
+
+		<div id="header" class="msos_navbar">
+			<ul class="breadcrumb">
+				<li class="kairos"><a class='btn btn-msos' href='//opensitemobile.com' title='Main site index page'><i class="fa fa-home"></i></a></li>
+			</ul>
+			<ul class="menus">
+				<li class="kairos"><a class="btn btn-msos" href='//github.com/OpenSiteMobile/kairos' title="MobileSiteOS version of Kairos example page"><i class="fa fa-github"></i></a></li>
+			</ul>
+		</div>
+
         <div class="container">
             <h2>Detect</h2>
 

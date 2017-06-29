@@ -56,7 +56,6 @@ if (msos.config.debug_css) {
 
 }
 
-
 // --------------------------
 // Scripts to 'defer' load (script injection)
 // --------------------------

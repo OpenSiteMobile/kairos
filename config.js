@@ -68,7 +68,7 @@ if (msos.config.debug_script) {
 		msos.resource_url('jquery', 'v311_msos.uc.js'),
 		msos.resource_url('jquery', 'ui/v1120.uc.js'),		// All UI Core + Draggable Interaction + Effects Core
 		msos.resource_url('','site.js'),					// Common installation specific setup code (which needs jQuery, underscore.js, etc.)
-		msos.resource_url('msos', 'v1746.uc.js'),
+		msos.resource_url('msos', 'msos.uc.js'),
 		msos.resource_url('kairos',	'core.js')
 	];
 
@@ -79,7 +79,7 @@ if (msos.config.debug_script) {
 		msos.resource_url('jquery', 'v311_msos.min.js'),
 		msos.resource_url('jquery', 'ui/v1120.min.js'),			// All UI Core + Draggable Interaction + Effects Core
 		msos.resource_url('','site.js'),
-		msos.resource_url('msos', 'v1746.min.js'),
+		msos.resource_url('msos', 'msos.min.js'),
 		msos.resource_url('kairos',	'core.js')
 	];
 }
